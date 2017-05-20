@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link":"pangolin client -r 123.207.252.230:79 -l 127.0.0.1:2333 && echo \"请不要忘记启动服务器\"",
+    "dev": "node src/app.js"
+
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "koa": "^2.2.0",
     "koa2": "^2.0.0-alpha.7",
+    "pangolin": "^1.0.11",
     "sha1": "^1.1.1"
   }
 }
