@@ -11,9 +11,10 @@ const sha1 = require('sha1')
 const util = require('./util')
 const weChatGetAccessToken = require('./wechat')
 module.exports = function (opts) {
-  let wechat = new weChatGetAccessToken(opts)
+  // let wechat = new weChatGetAccessToken(opts)
   return (
     async (ctx, next) => {
+      let that =this
       const token = opts.token
       const signature = ctx.query.signature
       const nonce = ctx.query.nonce
@@ -47,7 +48,23 @@ module.exports = function (opts) {
           let content  = await util.parseXMLAsync(data)
           let message = await util.formatMessage(content.xml)
           console.log(message)
-
+          if (message.MsgType ==='event'){
+            if (message.Event === 'subscribe'){
+              let now = new Date().getTime()
+              ctx.status = 200
+              ctx.type = 'application/xml'
+              let reply =
+                `<xml>
+                <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
+                <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
+                <CreateTime>${now}</CreateTime>
+                <MsgType><![CDATA[text]]></MsgType>
+                <Content><![CDATA[Thanks for your subscribe! this is the test msg]]></Content>
+                </xml>`
+              console.log(reply)
+              ctx.body = reply
+            }
+          }
         }
       } catch (err) {
         ctx.body = {message: err.message}
