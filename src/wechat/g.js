@@ -45,7 +45,9 @@ module.exports = function (opts) {
             encoding: ctx.charset
           })
           let content  = await util.parseXMLAsync(data)
-          console.log(content)
+          let message = await util.formatMessage(content.xml)
+          console.log(message)
+
         }
       } catch (err) {
         ctx.body = {message: err.message}
