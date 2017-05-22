@@ -11,10 +11,10 @@ const sha1 = require('sha1')
 const util = require('./util')
 const weChatGetAccessToken = require('./wechat')
 module.exports = function (opts) {
-  // let wechat = new weChatGetAccessToken(opts)
+  let wechat = new weChatGetAccessToken(opts)
   return (
     async (ctx, next) => {
-      let that =this
+      let that = this
       const token = opts.token
       const signature = ctx.query.signature
       const nonce = ctx.query.nonce
@@ -40,16 +40,16 @@ module.exports = function (opts) {
             ctx.body = 'wrong'
             return false
           }
-          let data =await getRowBody(ctx.req, {
+          let data = await getRowBody(ctx.req, {
             length: ctx.length,
             limit: '1mb',
             encoding: ctx.charset
           })
-          let content  = await util.parseXMLAsync(data)
+          let content = await util.parseXMLAsync(data)
           let message = await util.formatMessage(content.xml)
           console.log(message)
-          if (message.MsgType ==='event'){
-            if (message.Event === 'subscribe'){
+          if (message.MsgType === 'event') {
+            if (message.Event === 'subscribe') {
               let now = new Date().getTime()
               ctx.status = 200
               ctx.type = 'application/xml'
@@ -64,6 +64,21 @@ module.exports = function (opts) {
               console.log(reply)
               ctx.body = reply
             }
+          }
+          if (message.MsgType === 'text') {
+            let now = new Date().getTime()
+            ctx.status = 200
+            ctx.type = 'application/xml'
+            let reply =
+              `<xml>
+                <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
+                <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
+                <CreateTime>${now}</CreateTime>
+                <MsgType><![CDATA[text]]></MsgType>
+                <Content><![CDATA[该功能未开发完毕]]></Content>
+                </xml>`
+            console.log(reply)
+            ctx.body = reply
           }
         }
       } catch (err) {
