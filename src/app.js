@@ -1,4 +1,4 @@
-'use strict'
+
 /**
  * 由于使用的 ngrok 代理工具不稳定，所以需要及时替换测试号的链接
  * @url: https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index
