@@ -46,16 +46,20 @@ exports.formatMessage = formatMessage
 exports.tpl = function (content, message) {
   let info = {}
   let type = 'text'
-  let fromUserName = message.fromUserName
-  let toUserName = message.toUserName
+  let fromUserName = message.FromUserName
+  let toUserName = message.ToUserName
   if(Array.isArray(content)){
     type = 'news'
   }
   type = content.type ||type
-  info.centent = content
+  console.log('util:55,content.type:' + message.type)
+  info.content = content
   info.createTime = new Date().getTime()
   info.msgType = type
   info.toUserName = fromUserName
   info.fromUserName = toUserName
+  console.log(message)
+  console.log(info)
+  console.log(tpl.compiled(info))
   return tpl.compiled(info)
 }

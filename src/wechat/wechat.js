@@ -6,7 +6,7 @@ const prefix = 'https://api.weixin.qq.com/cgi-bin/'
 let api = {
   accessToken: `${prefix}token?grant_type=client_credential`
 }
-function weChatGetAccessToken (opts) {
+function WeChat (opts) {
   let that = this
   this.appID = opts.appID
   this.appSecret = opts.appSecret
@@ -31,14 +31,14 @@ function weChatGetAccessToken (opts) {
     that.saveAccessToken(data)
   })
 }
-weChatGetAccessToken.prototype.isValidAccessToken = function (data) {
+WeChat.prototype.isValidAccessToken = function (data) {
   if (!data || !data.access_token || !data.expires_in) return false
   let access_token = data.access_token
   let expires_in = data.expires_in
   let now = (new Date().getTime())
   return (now < expires_in)
 }
-weChatGetAccessToken.prototype.updateAccessToken = function () {
+WeChat.prototype.updateAccessToken = function () {
   let appID = this.appID
   let appSecert = this.appSecret
   let url = `${api.accessToken}&appid=${appID}&secret=${appSecert}`
@@ -56,13 +56,12 @@ weChatGetAccessToken.prototype.updateAccessToken = function () {
     })
   })
 }
-weChatGetAccessToken.prototype.reply =function () {
+WeChat.prototype.reply =function () {
   let content = this.body
   let message = this.weixin
   let xml = util.tpl(content, message)
-
   this.status = 200
   this.type = 'application/xml'
   this.body = xml
 }
-module.exports = weChatGetAccessToken
+module.exports = WeChat

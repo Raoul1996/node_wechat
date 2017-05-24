@@ -7,7 +7,6 @@
  */
 
 const Koa = require('koa')
-const util = require('../libs/util')
 const path = require('path')
 const weChat = require('./wechat/g')
 const wechat_file = path.join(__dirname,'../config/wechat_file.txt')
