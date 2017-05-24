@@ -1,5 +1,6 @@
 'use strict'
 const Promise = require('bluebird')
+const util = require('./util')
 const request = Promise.promisify(require('request'))
 const prefix = 'https://api.weixin.qq.com/cgi-bin/'
 let api = {
@@ -19,7 +20,7 @@ function weChatGetAccessToken (opts) {
           return that.updateAccessToken(data)
         }
         if (that.isValidAccessToken(data)) {
-          Promise.resolve(data)
+          return Promise.resolve(data)
         } else {
           return that.updateAccessToken()
         }
@@ -54,5 +55,14 @@ weChatGetAccessToken.prototype.updateAccessToken = function () {
       resolve(data)
     })
   })
+}
+weChatGetAccessToken.prototype.reply =function () {
+  let content = this.body
+  let message = this.weixin
+  let xml = util.tpl(content, message)
+
+  this.status = 200
+  this.type = 'application/xml'
+  this.body = xml
 }
 module.exports = weChatGetAccessToken

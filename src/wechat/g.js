@@ -12,80 +12,69 @@ const util = require('./util')
 const weChatGetAccessToken = require('./wechat')
 module.exports = function (opts) {
   let wechat = new weChatGetAccessToken(opts)
-  return (
-    async (ctx, next) => {
+  return function* (next) {
       let that = this
       const token = opts.token
-      const signature = ctx.query.signature
-      const nonce = ctx.query.nonce
-      const timestamp = ctx.query.timestamp
-      const echostr = ctx.query.echostr
+      const signature = this.query.signature
+      const nonce = this.query.nonce
+      const timestamp = this.query.timestamp
+      const echostr = this.query.echostr
       /**
        * 根据微信开发者文档显示，有必要在本地设置signature的检测。
        */
       const str = [token, timestamp, nonce].sort().join('')
       const sha = sha1(str)
-      try {
-        if (ctx.method === 'GET') {
-          if (sha === signature) {
-            console.log(sha)
-            ctx.body = echostr + ''
-            console.log('successful')
-          } else {
-            ctx.body = 'err'
-            console.log(' test err')
-          }
-        } else if (ctx.method === 'POST') {
-          if (sha !== signature) {
-            ctx.body = 'wrong'
-            return false
-          }
-          let data = await getRowBody(ctx.req, {
-            length: ctx.length,
-            limit: '1mb',
-            encoding: ctx.charset
-          })
-          let content = await util.parseXMLAsync(data)
-          let message = await util.formatMessage(content.xml)
-          console.log(message)
-          if (message.MsgType === 'event') {
-            if (message.Event === 'subscribe') {
-              let now = new Date().getTime()
-              ctx.status = 200
-              ctx.type = 'application/xml'
-              let reply =
-                `<xml>
-                <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
-                <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
-                <CreateTime>${now}</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[Thanks for your subscribe! this is the test msg]]></Content>
-                </xml>`
-              console.log(reply)
-              ctx.body = reply
-            }
-          }
-          if (message.MsgType === 'text') {
-            let now = new Date().getTime()
-            ctx.status = 200
-            ctx.type = 'application/xml'
-            let reply =
-              `<xml>
-                <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
-                <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
-                <CreateTime>${now}</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[该功能未开发完毕]]></Content>
-                </xml>`
-            console.log(reply)
-            ctx.body = reply
-          }
+      if (this.method === 'GET') {
+        if (sha === signature) {
+          console.log(sha)
+          this.body = echostr + ''
+          console.log('successful')
+        } else {
+          this.body = 'err'
+          console.log(' test err')
         }
-      } catch (err) {
-        ctx.body = {message: err.message}
-        ctx.status = err.status || 500
+      } else if (this.method === 'POST') {
+        if (sha !== signature) {
+          this.body = 'wrong'
+          return false
+        }
+        let data = yield getRowBody(this.req, {
+          length: this.length,
+          limit: '1mb',
+          encoding: this.charset
+        })
+        let content = yield util.parseXMLAsync(data)
+        let message = yield util.formatMessage(content.xml)
+        console.log(message)
+        console.log('dengdaizhixing')
+        this.weixin = message
+        yield handler.call(this,next)
+        wechat.reply.call(this)
+        /* if (message.MsgType === 'event') {
+         if (message.Event === 'subscribe') {
+         let now = new Date().getTime()
+         this.status = 200
+         this.type = 'application/xml'
+         let reply =
+         `<xml>
+         <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
+         <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
+         <CreateTime>${now}</CreateTime>
+         <MsgType><![CDATA[text]]></MsgType>
+         <Content><![CDATA[Thanks for your subscribe! this is the test msg]]></Content>
+         </xml>`
+         console.log(reply)
+         this.body = reply
+         }
+         }
+         if (message.MsgType === 'text') {
+         let now = new Date().getTime()
+         this.status = 200
+         this.type = 'application/xml'
+         this.body = xml
+
+         }*/
       }
     }
-  )
+
 }
-//

@@ -1,7 +1,6 @@
 
 const fs = require('fs')
 const Promise = require('bluebird')
-
 exports.readFileSync = function (fpath, encoding) {
   return new Promise((resolve, reject) => {
     fs.readFile(fpath, encoding, (err, content) => {
