@@ -13,7 +13,7 @@ const tpl = heredoc(() => {
    <Content> <![CDATA[<%= content %>]]> </Content>
    <% } else if(msgType === 'image') { %>
    <Image>
-   <MediaId><![CDATA[<%= content.media_id %>]]></MediaId>
+   <MediaId><![CDATA[<%= content.mediaId %>]]></MediaId>
    </Image>
    <% } else if(msgType === 'voice') { %>
    <Voice>

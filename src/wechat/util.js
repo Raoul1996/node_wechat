@@ -1,6 +1,7 @@
 'use strict'
 const xml2js = require('xml2js')
 const Promise = require('bluebird')
+const util = require('./util')
 const tpl = require('./tpl')
 exports.parseXMLAsync = function (xml) {
   return new Promise((resolve, reject) => {
@@ -51,13 +52,15 @@ exports.tpl = function (content, message) {
   if(Array.isArray(content)){
     type = 'news'
   }
-  type = content.type ||type
+  type = content.type || type
   console.log('util:55,content.type:' + message.type)
   info.content = content
   info.createTime = new Date().getTime()
   info.msgType = type
   info.toUserName = fromUserName
   info.fromUserName = toUserName
+  console.log('line 61 in util')
+  console.log('line 63 in util')
   console.log(message)
   console.log(info)
   console.log(tpl.compiled(info))

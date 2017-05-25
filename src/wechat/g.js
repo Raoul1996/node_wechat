@@ -31,7 +31,6 @@ module.exports = function (opts,handler) {
         console.log('successful')
       } else {
         this.body = 'err'
-        console.log(' test err')
       }
     } else if (this.method === 'POST') {
       if (sha !== signature) {
@@ -44,8 +43,8 @@ module.exports = function (opts,handler) {
         encoding: this.charset
       })
       let content = yield util.parseXMLAsync(data)
-      let message = yield util.formatMessage(content.xml)
-      this.weixin = message
+      let messages = yield util.formatMessage(content.xml)
+      this.weixin = messages
       yield handler.call(this, next)
       wechat.reply.call(this)
     }
