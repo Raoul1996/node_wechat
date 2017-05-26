@@ -53,16 +53,13 @@ exports.tpl = function (content, message) {
     type = 'news'
   }
   type = content.type || type
-  console.log('util:55,content.type:' + message.type)
+  console.log('util line 56')
+  console.log(type)
   info.content = content
   info.createTime = new Date().getTime()
   info.msgType = type
   info.toUserName = fromUserName
   info.fromUserName = toUserName
-  console.log('line 61 in util')
-  console.log('line 63 in util')
-  console.log(message)
-  console.log(info)
   console.log(tpl.compiled(info))
   return tpl.compiled(info)
 }

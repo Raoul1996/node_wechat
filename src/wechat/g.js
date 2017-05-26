@@ -26,7 +26,6 @@ module.exports = function (opts,handler) {
     const sha = sha1(str)
     if (this.method === 'GET') {
       if (sha === signature) {
-        console.log(sha)
         this.body = echostr + ''
         console.log('successful')
       } else {

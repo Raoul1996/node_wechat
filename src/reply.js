@@ -1,4 +1,23 @@
-
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//               佛祖保佑         永无BUG
 const config = require('./config')
 const Wechat = require('./wechat/wechat')
 const weChatApi = new Wechat(config.weChat)
@@ -51,25 +70,39 @@ exports.reply = function* (next) {
     else if (content === '4') {
       reply = '萌萌是我的宝贝'
     } else if (content === '5') {
-      reply = {
+      reply = [{
         title: '我的小祖宗',
         description: '我的女朋友',
         picUrl: 'http://oq5td7hx8.bkt.clouddn.com/11.jpg',
         url: 'https://github.com/'
-      }
-    } else if (content === '6') {
-      reply = {
+      }, {
         title: '祝我自己生日快乐',
         description: '5月25居然是农历的4月30啊',
         picUrl: 'http://oq5td7hx8.bkt.clouddn.com/14.jpg',
         url: 'http://nodejs.org/'
-      }
+      }]
+    } else if (content === '6') {
+      reply = [{
+        title: '祝我自己生日快乐',
+        description: '5月25居然是农历的4月30啊',
+        picUrl: 'http://oq5td7hx8.bkt.clouddn.com/14.jpg',
+        url: 'http://nodejs.org/'
+      }]
     } else if (content === '7') {
 
       let data = yield weChatApi.uploadMaterial('image', `${__dirname}/2.jpg`)
       reply = {
         type: 'image',
         mediaId: data.media_id
+      }
+    } else if (content === '8') {
+
+      let data = yield weChatApi.uploadMaterial('image', `${__dirname}/2.jpg`)
+      reply = {
+        type: 'video',
+        title: '回复视频内容',
+        description:'一小段视频',
+        mediaId:data.media_id
       }
     }
     this.body = reply
